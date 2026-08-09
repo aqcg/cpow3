@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: '/cpow3/', // ⚠️ 非常重要！請確認前後都有斜線，且名稱與你的 GitHub 專案庫完全一致
   title: 'Code x Chip x Creativity',
   description: '程式碼、硬體晶片與創意的實作紀錄',
 
