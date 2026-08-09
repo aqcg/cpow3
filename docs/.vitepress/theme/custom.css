@@ -1,0 +1,17 @@
+/* 讓 VitePress 首頁 Hero 的標題區塊寬度變大，避免換行 */
+:root {
+  --vp-home-hero-name-max-width: 100%;
+}
+
+.VPHero .name {
+  max-width: none !important;
+  white-space: nowrap; /* 強制不換行 */
+}
+
+/* 如果你的螢幕比較小，可以讓標題字體隨螢幕彈性微調 */
+@media (max-width: 768px) {
+  .VPHero .name {
+    font-size: 32px !important;
+    white-space: normal; /* 手機版還是讓它自然換行才不會爆邊 */
+  }
+}
