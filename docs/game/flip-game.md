@@ -3,7 +3,7 @@
 請嘗試用滑鼠或手指在 8x8 點陣圖上劃過，體驗動態燈光軌跡與隨機色彩變化！
 
 <iframe 
-  src="/games/flip-game.html" 
+  src="/game/flip-game.html" 
   width="100%" 
   height="450px" 
   style="border: 1px solid #30363d; border-radius: 12px; background-color: #0d1117;"
