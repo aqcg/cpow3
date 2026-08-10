@@ -1,12 +1,24 @@
 # 🎮 翻轉遊戲挑戰
 
-建議點擊下方按鈕以全螢幕模式開啟，體驗最佳效果：
+請點擊下方按鈕，以獨立全螢幕視窗開啟遊戲：
 
-<a :href="$withBase('/game/flip-game.html')" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background-color: #10b981; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 10px 0;">
-  🚀 另開新分頁全螢幕遊玩
-</a>
+<script setup>
+import { withBase } from 'vitepress'
+
+const openGame = () => {
+  window.open(withBase('/game/flip-game.html'), '_blank')
+}
+</script>
+
+<button 
+  @click="openGame"
+  style="padding: 12px 24px; background-color: #238636; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px;"
+>
+  🚀 開啟遊戲全螢幕畫面
+</button>
 
 ---
 
 ## 🎯 遊戲簡介
-（這裡可以寫你的遊戲規則與說明）
+- 點擊按鈕後會開啟獨立遊戲視窗。
+- 支援完整響應式尺寸與觸控體驗。
