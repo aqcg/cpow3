@@ -74,8 +74,9 @@ export default defineConfig({
         {
           text: '🎮 挑戰活動',
           items: [
-            { text: '活動說明', link: '/game/' },             // 對應 docs/game/index.md
-            { text: '翻轉遊戲', link: '/game/flip-game' },   // 對應 docs/game/flip-game.md
+            { text: '活動說明', link: '/game/' },
+            // 💡 加上 target: '_blank'，點擊選單直接開啟新頁籤
+            { text: '翻轉遊戲 (全螢幕)', link: '/game/flip-game.html', target: '_blank' },
           ],
         },
       ],
