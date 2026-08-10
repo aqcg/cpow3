@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Code x Chip x Creativity</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --matrix-bg: #161b22;
+            --led-off: #21262d;
+            /* 預設藍色僅用於自動動畫 */
+            --led-on-default: #58a6ff; 
+            --text-color: #c9d1d9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 適應 iframe 嵌入環境，移除全螢幕固定位置鎖定 */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+
+        body {
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overscroll-behavior: none;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            gap: 20px; 
+        }
+
+        .header {
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
+
+        /* 點陣列外框 */
+        .matrix-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            background-color: var(--matrix-bg);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #30363d;
+            width: 100%;
+            aspect-ratio: 1 / 1; 
+            max-width: 280px;
+            margin: 0 auto;
+            touch-action: none;
+        }
+
+        .led {
+            background-color: var(--led-off);
+            border-radius: 50%;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: background-color 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        /* 系統自動動畫用的 CSS class */
+        .led.active {
+            background-color: var(--led-on-default);
+            box-shadow: 0 0 10px var(--led-on-default), 0 0 3px var(--led-on-default) inset;
+        }
+
+        /* 手機版 RWD 精細微調 */
+        @media (max-width: 480px) {
+            .container {
+                justify-content: flex-start;
+                padding-top: 15px; 
+                padding-bottom: 10px;
+                gap: 12px; 
+                height: 100%;
+            }
+            .header {
+                margin-bottom: 0px;
+            }
+            h1 { 
+                font-size: 1.1rem; 
+                letter-spacing: 1px;
+            }
+            .subtitle { 
+                font-size: 0.75rem; 
+            }
+            .matrix-board { 
+                gap: 5px; 
+                padding: 10px; 
+                max-width: 220px; 
+            }
+        }
+
+        /* 針對極短螢幕手機的極端直立修正 */
+        @media (max-height: 600px) and (max-width: 480px) {
+            .container { 
+                padding-top: 10px; 
+                gap: 8px; 
+            }
+            h1 { 
+                font-size: 0.95rem; 
+            }
+            .matrix-board { 
+                max-width: 190px; 
+                padding: 8px; 
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Code × Chip × Creativity</h1>
+            <div class="subtitle">Digital Sandbox v1.3</div>
+        </div>
+
+        <div class="matrix-board" id="matrix"></div>
+    </div>
+
+    <script>
+        const matrixContainer = document.getElementById('matrix');
+        const rows = 8;
+        const cols = 8;
+        const totalLeds = rows * cols;
+        const ledsArray = [];
+
+        // 當前滑動軌跡的顏色
+        let currentTraceColor = ''; 
+
+        // 生成隨機鮮豔顏色
+        function generateRandomColor() {
+            const hue = Math.floor(Math.random() * 360);
+            return `hsl(${hue}, 90%, 65%)`; 
+        }
+
+        // 核心修正：統一且安全的熄滅邏輯（解決殘留問題）
+        function fadeOut(led) {
+            if (led.fadeTimeout) {
+                clearTimeout(led.fadeTimeout);
+                led.fadeTimeout = null;
+            }
+
+            led.fadeTimeout = setTimeout(() => {
+                led.classList.remove('active');
+                led.style.backgroundColor = '';
+                led.style.boxShadow = '';
+                led.fadeTimeout = null;
+            }, 600);
+        }
+
+        // --- 初始化 LED 與事件 ---
+        for (let i = 0; i < totalLeds; i++) {
+            const led = document.createElement('div');
+            led.classList.add('led');
+            
+            // 電腦版滑鼠事件
+            led.addEventListener('mouseenter', (e) => {
+                if (!currentTraceColor) {
+                    currentTraceColor = generateRandomColor();
+                }
+                triggerInteractionLed(led);
+            });
+
+            matrixContainer.appendChild(led);
+            ledsArray.push(led);
+        }
+
+        // 電腦版：滑鼠離開點陣列範圍時清空顏色軌跡
+        matrixContainer.addEventListener('mouseleave', () => {
+            currentTraceColor = ''; 
+        });
+
+        // --- 手機版：觸控事件處理 ---
+        matrixContainer.addEventListener('touchstart', (e) => {
+            currentTraceColor = generateRandomColor();
+            const touch = e.touches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (element && element.classList.contains('led')) {
+                triggerInteractionLed(element);
+            }
+        }, { passive: true });
+
+        matrixContainer.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+            const touch = e.touches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (element && element.classList.contains('led')) {
+                triggerInteractionLed(element);
+            }
+        }, { passive: false });
+
+        matrixContainer.addEventListener('touchend', () => {
+            currentTraceColor = '';
+        });
+
+        // 互動點亮
+        function triggerInteractionLed(led) {
+            if (!currentTraceColor) currentTraceColor = generateRandomColor();
+            led.style.backgroundColor = currentTraceColor;
+            led.style.boxShadow = `0 0 12px ${currentTraceColor}, 0 0 4px ${currentTraceColor} inset`;
+            fadeOut(led);
+        }
+
+        // 系統自動動畫
+        function triggerAutoLed(led) {
+            led.classList.add('active');
+            fadeOut(led);
+        }
+
+        // 自動動畫邏輯
+        function runPulseAnimation() {
+            const mode = Math.floor(Math.random() * 3);
+            if (mode === 0) {
+                for (let r = 0; r < rows; r++) {
+                    setTimeout(() => ledsArray.forEach(led => (Math.floor(ledsArray.indexOf(led)/8) === r) && triggerAutoLed(led)), r * 60);
+                }
+            } else if (mode === 1) {
+                for (let c = 0; c < cols; c++) {
+                    setTimeout(() => ledsArray.forEach(led => (ledsArray.indexOf(led)%8 === c) && triggerAutoLed(led)), c * 60);
+                }
+            } else {
+                for (let i = 0; i < 12; i++) {
+                    setTimeout(() => triggerAutoLed(ledsArray[Math.floor(Math.random() * totalLeds)]), i * 40);
+                }
+            }
+        }
+
+        setInterval(runPulseAnimation, 5000);
+        setTimeout(runPulseAnimation, 1000);
+    </script>
+</body>
+</html>
