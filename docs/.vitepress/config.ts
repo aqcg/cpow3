@@ -69,6 +69,16 @@ export default defineConfig({
           ],
         },
       ],
+
+      '/game/': [
+        {
+          text: '🎮 挑戰活動',
+          items: [
+            { text: '活動說明', link: '/game/' },             // 對應 docs/game/index.md
+            { text: '翻轉遊戲', link: '/game/flip-game' },   // 對應 docs/game/flip-game.md
+          ],
+        },
+      ],
     },
 
     // 右上角社交連結
