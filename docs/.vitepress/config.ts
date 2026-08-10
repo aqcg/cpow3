@@ -18,7 +18,7 @@ export default defineConfig({
       { text: 'GA4', link: '/ga4/' },
       { text: 'Canva', link: '/canva/' },
       { text: '摺紙藝術', link: '/origami/' },
-      { text: 'GIMP', link: '/gimp/' },
+      { text: '挑戰活動', link: '/game/' },
       { text: '關於', link: '/about' },
     ],
 
