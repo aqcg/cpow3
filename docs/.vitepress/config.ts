@@ -76,7 +76,7 @@ export default defineConfig({
           items: [
             { text: '活動說明', link: '/game/' },
             // 💡 加上 target: '_blank'，點擊選單直接開啟新頁籤
-            { text: '翻轉遊戲 (全螢幕)', link: '/game/flip-game.html', target: '_blank' },
+            { text: 'bqdp空間翻轉', link: 'https://aqcg.github.io/app/flip-game/', target: '_blank' },
           ],
         },
       ],
